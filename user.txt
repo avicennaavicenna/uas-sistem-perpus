@@ -1,0 +1,4 @@
+username password role
+admin admin123 admin
+mahasiswa mhs123 user
+creeperHS78 duar admin
