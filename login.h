@@ -1,13 +1,12 @@
-
 #ifndef LOGIN_H
 #define LOGIN_H
 
 #include "data_structure.h"
 
-/* Memeriksa username dan password */
-int prosesLogin(UserList *daftarUser, User *userLogin);
+/* Menampilkan form login dan memverifikasi akun pengguna */
+int prosesLogin(User *currentUser);
 
-/* Menampilkan informasi pengguna */
-void tampilkanInfoUser(User user);
+/* Membersihkan status sesi login pengguna saat ini */
+void prosesLogout(User *currentUser);
 
 #endif
