@@ -148,3 +148,166 @@ void searchBook(const BookList *books) {
         printf("\nBuku tidak ditemukan.\n");
     }
 }
+
+/* =====================================================
+   FUNGSI BANTU: MENGAMBIL TANGGAL HARI INI
+   Format: YYYY-MM-DD
+   ===================================================== */
+
+static int getTodayDate(char *buffer, size_t size) {
+    time_t now = time(NULL);
+    struct tm *currentDate = localtime(&now);
+
+    if (currentDate == NULL) {
+        return 0;
+    }
+
+    return strftime(buffer, size, "%Y-%m-%d", currentDate) > 0;
+}
+
+/* =====================================================
+   FUNGSI BANTU: MEMERIKSA PEMINJAMAN GANDA
+   ===================================================== */
+
+static int alreadyBorrowed(
+    const TransactionList *transactions,
+    const char *username,
+    const char *ocaid
+) {
+    if (transactions == NULL || username == NULL || ocaid == NULL) {
+        return 0;
+    }
+
+    for (size_t i = 0; i < transactions->count; i++) {
+        const Transaction *trx = &transactions->items[i];
+
+        if (strcmp(trx->username, username) == 0 &&
+            strcmp(trx->ocaid, ocaid) == 0 &&
+            strcmp(trx->status, STATUS_DIPINJAM) == 0) {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+/* =====================================================
+   3. MEMINJAM BUKU
+   ===================================================== */
+
+void borrowBook(
+    BookList *books,
+    TransactionList *transactions,
+    const char *username
+) {
+    char ocaid[128];
+    Transaction newTrx = {0};
+
+    if (books == NULL || transactions == NULL || username == NULL) {
+        printf("\n[ERROR] Data peminjaman tidak valid.\n");
+        return;
+    }
+
+    printf("\n========================================\n");
+    printf("             PEMINJAMAN BUKU\n");
+    printf("========================================\n");
+
+    showAvailableBooks(books);
+
+    printf("\nMasukkan ID buku yang ingin dipinjam: ");
+    readInput(ocaid, sizeof(ocaid));
+
+    if (ocaid[0] == '\0') {
+        printf("\nID buku tidak boleh kosong.\n");
+        return;
+    }
+
+    // Mencari buku berdasarkan ID
+    Book *book = find_book_by_id(books, ocaid);
+
+    if (book == NULL) {
+        printf("\n[ GAGAL ] Buku tidak ditemukan.\n");
+        return;
+    }
+
+    // Memeriksa stok buku
+    if (book->stock <= 0) {
+        printf("\n[ GAGAL ] Stok buku sedang habis.\n");
+        return;
+    }
+
+    // Memeriksa peminjaman aktif pengguna
+    if (alreadyBorrowed(transactions, username, book->ocaid)) {
+        printf("\n[ GAGAL ] Kamu masih meminjam buku ini.\n");
+        return;
+    }
+
+    // Mengambil tanggal peminjaman
+    if (!getTodayDate(
+            newTrx.tanggal_pinjam,
+            sizeof(newTrx.tanggal_pinjam))) {
+        printf("\n[ ERROR ] Gagal mengambil tanggal hari ini.\n");
+        return;
+    }
+
+    // Menyiapkan data transaksi
+    newTrx.id_transaksi = get_next_transaction_id(transactions);
+
+    snprintf(
+        newTrx.username,
+        sizeof(newTrx.username),
+        "%s",
+        username
+    );
+
+    snprintf(
+        newTrx.ocaid,
+        sizeof(newTrx.ocaid),
+        "%s",
+        book->ocaid
+    );
+
+    snprintf(
+        newTrx.status,
+        sizeof(newTrx.status),
+        "%s",
+        STATUS_DIPINJAM
+    );
+
+    // Mengurangi stok buku
+    book->stock--;
+
+    // Menyimpan perubahan stok
+    if (!save_books(FILE_BOOKS, books)) {
+        book->stock++;
+
+        printf("\n[ ERROR ] Gagal menyimpan perubahan stok.\n");
+        return;
+    }
+
+    // Menambahkan transaksi menggunakan fungsi database teman
+    if (!add_transaction(transactions, newTrx)) {
+        // Mengembalikan stok jika transaksi gagal
+        book->stock++;
+
+        if (!save_books(FILE_BOOKS, books)) {
+            printf("\n[PERINGATAN] Gagal mengembalikan stok ke file.\n");
+        }
+
+        printf("\n[ GAGAL ] Peminjaman tidak berhasil disimpan.\n");
+        return;
+    }
+
+    // Menampilkan informasi peminjaman berhasil
+    printf("\n========================================\n");
+    printf("        PEMINJAMAN BERHASIL!\n");
+    printf("========================================\n");
+    printf("ID Transaksi   : %d\n", newTrx.id_transaksi);
+    printf("Username       : %s\n", newTrx.username);
+    printf("ID Buku        : %s\n", book->ocaid);
+    printf("Judul Buku     : %s\n", book->title);
+    printf("Tanggal Pinjam : %s\n", newTrx.tanggal_pinjam);
+    printf("Status         : %s\n", newTrx.status);
+    printf("Sisa Stok      : %d\n", book->stock);
+    printf("========================================\n");
+}
