@@ -1,7 +1,28 @@
-
 #include <stdio.h>
 #include <string.h>
+#include <ctype.h>
 #include "sorting.h"
+
+/* Membandingkan dua string tanpa membedakan huruf besar/kecil */
+static int bandingkanTeksCaseInsensitive(const char *s1, const char *s2) {
+    if (s1 == NULL && s2 == NULL) return 0;
+    if (s1 == NULL) return -1;
+    if (s2 == NULL) return 1;
+
+    while (*s1 != '\0' && *s2 != '\0') {
+        unsigned char c1 = (unsigned char)tolower((unsigned char)*s1);
+        unsigned char c2 = (unsigned char)tolower((unsigned char)*s2);
+
+        if (c1 != c2) {
+            return (c1 < c2) ? -1 : 1;
+        }
+        s1++;
+        s2++;
+    }
+
+    if (*s1 == '\0' && *s2 == '\0') return 0;
+    return (*s1 == '\0') ? -1 : 1;
+}
 
 /* Membandingkan dua buku berdasarkan atribut */
 static int bandingkanBuku(Book a, Book b, SortingField atribut) {
@@ -10,7 +31,7 @@ static int bandingkanBuku(Book a, Book b, SortingField atribut) {
             return strcmp(a.ocaid, b.ocaid);
 
         case SORT_JUDUL:
-            return strcmp(a.title, b.title);
+            return bandingkanTeksCaseInsensitive(a.title, b.title);
 
         case SORT_TAHUN:
             if (a.year < b.year) return -1;
@@ -49,13 +70,11 @@ static int harusDiDepan(Book a, Book b,
 static void bubbleSort(BookList *list,
                        SortingField atribut,
                        SortingOrder urutan) {
-    for (size_t i = 0; i < list->count - 1; i++) {
-        for (size_t j = 0; j < list->count - i - 1; j++) {
-
+    for (size_t i = 0; i + 1 < list->count; i++) {
+        for (size_t j = 0; j + 1 < list->count - i; j++) {
             if (harusDiDepan(list->items[j],
                              list->items[j + 1],
                              atribut, urutan)) {
-
                 Book temp = list->items[j];
                 list->items[j] = list->items[j + 1];
                 list->items[j + 1] = temp;
@@ -68,11 +87,10 @@ static void bubbleSort(BookList *list,
 static void selectionSort(BookList *list,
                           SortingField atribut,
                           SortingOrder urutan) {
-    for (size_t i = 0; i < list->count - 1; i++) {
+    for (size_t i = 0; i + 1 < list->count; i++) {
         size_t posisi = i;
 
         for (size_t j = i + 1; j < list->count; j++) {
-
             if (harusDiDepan(list->items[posisi],
                              list->items[j],
                              atribut, urutan)) {
@@ -99,7 +117,6 @@ static void insertionSort(BookList *list,
         while (j > 0 &&
                harusDiDepan(list->items[j - 1],
                             kunci, atribut, urutan)) {
-
             list->items[j] = list->items[j - 1];
             j--;
         }
@@ -113,7 +130,6 @@ void sortingBuku(BookList *daftarBuku,
                  SortingAlgorithm algoritma,
                  SortingField atribut,
                  SortingOrder urutan) {
-
     if (daftarBuku == NULL ||
         daftarBuku->items == NULL ||
         daftarBuku->count < 2) {
