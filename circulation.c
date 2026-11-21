@@ -3,6 +3,8 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include <time.h>
+#include <errno.h>
+#include <limits.h>
 
 #include "circulation.h"
 #include "database.h"
@@ -63,6 +65,10 @@ static int containsIgnoreCase(const char *text, const char *keyword) {
 // =====================================================
 
 void showAvailableBooks(const BookList *books) {
+        if (books == NULL) {
+        printf("[ERROR] Data buku tidak tersedia.\n");
+        return;
+    }
 
     printf("\n========================================\n");
     printf("          KATALOG BUKU TERSEDIA\n");
@@ -105,6 +111,11 @@ void showAvailableBooks(const BookList *books) {
 // =====================================================
 
 void searchBook(const BookList *books) {
+
+    if (books == NULL) {
+        printf("[ERROR] Data buku tidak tersedia.\n");
+        return;
+    }
 
     char keyword[200];
 
@@ -151,7 +162,7 @@ void searchBook(const BookList *books) {
 
 /* =====================================================
    FUNGSI BANTU: MENGAMBIL TANGGAL HARI INI
-   Format: YYYY-MM-DD
+   Format: DD-MM-YYYY
    ===================================================== */
 
 static int getTodayDate(char *buffer, size_t size) {
@@ -162,7 +173,7 @@ static int getTodayDate(char *buffer, size_t size) {
         return 0;
     }
 
-    return strftime(buffer, size, "%Y-%m-%d", currentDate) > 0;
+    return strftime(buffer, size, "%d-%m-%Y", currentDate) > 0;
 }
 
 /* =====================================================
@@ -203,7 +214,8 @@ void borrowBook(
     char ocaid[128];
     Transaction newTrx = {0};
 
-    if (books == NULL || transactions == NULL || username == NULL) {
+    if (books == NULL || transactions == NULL ||
+        username == NULL || username[0] == '\0') {
         printf("\n[ERROR] Data peminjaman tidak valid.\n");
         return;
     }
@@ -319,8 +331,13 @@ void borrowBook(
 void returnBook(
     BookList *books,
     TransactionList *transactions,
-    const char *username
-) {
+    const char *username)
+ {
+        if (books == NULL || transactions == NULL ||
+            username == NULL || username[0] == '\0') {
+            printf("\n[ERROR] Data pengembalian tidak valid.\n");
+            return;
+    }
 
     printf("\n========================================\n");
     printf("             PENGEMBALIAN BUKU\n");
@@ -366,10 +383,16 @@ void returnBook(
     readInput(input, sizeof(input));
 
     char *end;
+    errno = 0;
+
     long transactionID = strtol(input, &end, 10);
 
-    if (input[0] == '\0' || *end != '\0' ||
-        transactionID <= 0 || transactionID > 2147483647L) {
+    if (input[0] == '\0' ||
+        end == input ||
+        *end != '\0' ||
+        errno == ERANGE ||
+        transactionID <= 0 ||
+        transactionID > INT_MAX) {
 
         printf("ID transaksi tidak valid.\n");
         return;
@@ -444,11 +467,15 @@ void returnBook(
 
 void showHistory(
     const TransactionList *transactions,
-    const char *username
-) {
+    const char *username) 
+    {
+        if (transactions == NULL || username == NULL || username[0] == '\0') {
+        printf("[ERROR] Data peminjaman atau username tidak valid.\n");
+        return;
+    }
 
     printf("\n========================================\n");
-    printf("          RIWAYAT PEMINJAMAN\n");
+    printf("          DAFTAR PEMINJAMAN AKTIF\n");
     printf("========================================\n");
 
     int found = 0;
@@ -457,8 +484,9 @@ void showHistory(
 
         const Transaction *trx = &transactions->items[i];
 
-        // Hanya menampilkan riwayat user yang login
-        if (strcmp(trx->username, username) == 0) {
+        // Hanya menampilkan peminjaman aktif milik user yang login
+        if (strcmp(trx->username, username) == 0 &&
+            strcmp(trx->status, STATUS_DIPINJAM) == 0) { 
 
             printf("\nID Transaksi : %d\n", trx->id_transaksi);
             printf("ID Buku      : %s\n", trx->ocaid);
@@ -472,6 +500,6 @@ void showHistory(
     }
 
     if (!found) {
-        printf("Belum ada riwayat peminjaman.\n");
+        printf("Belum ada peminjaman aktif.\n");
     }
 }
