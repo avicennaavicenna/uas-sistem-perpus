@@ -311,3 +311,167 @@ void borrowBook(
     printf("Sisa Stok      : %d\n", book->stock);
     printf("========================================\n");
 }
+
+// =====================================================
+// 4. MELAKUKAN PENGEMBALIAN BUKU
+// =====================================================
+
+void returnBook(
+    BookList *books,
+    TransactionList *transactions,
+    const char *username
+) {
+
+    printf("\n========================================\n");
+    printf("             PENGEMBALIAN BUKU\n");
+    printf("========================================\n");
+
+    int found = 0;
+
+    // Menampilkan transaksi aktif milik user
+    for (size_t i = 0; i < transactions->count; i++) {
+
+        Transaction *trx = &transactions->items[i];
+
+        if (strcmp(trx->username, username) == 0 &&
+            strcmp(trx->status, STATUS_DIPINJAM) == 0) {
+
+            Book *book = find_book_by_id(books, trx->ocaid);
+
+            printf("\nID Transaksi : %d\n", trx->id_transaksi);
+            printf("ID Buku      : %s\n", trx->ocaid);
+
+            if (book != NULL) {
+                printf("Judul Buku   : %s\n", book->title);
+            }
+
+            printf("Tanggal Pinjam: %s\n", trx->tanggal_pinjam);
+            printf("Status       : %s\n", trx->status);
+
+            printf("----------------------------------------\n");
+
+            found = 1;
+        }
+    }
+
+    if (!found) {
+        printf("Kamu tidak memiliki buku yang sedang dipinjam.\n");
+        return;
+    }
+
+    // Meminta ID transaksi
+    char input[30];
+
+    printf("\nMasukkan ID transaksi yang ingin dikembalikan: ");
+    readInput(input, sizeof(input));
+
+    char *end;
+    long transactionID = strtol(input, &end, 10);
+
+    if (input[0] == '\0' || *end != '\0' ||
+        transactionID <= 0 || transactionID > 2147483647L) {
+
+        printf("ID transaksi tidak valid.\n");
+        return;
+    }
+
+    // Mencari transaksi
+    Transaction *trx = find_transaction_by_id(
+        transactions,
+        (int)transactionID
+    );
+
+    // Memeriksa transaksi dan pemiliknya
+    if (trx == NULL ||
+        strcmp(trx->username, username) != 0 ||
+        strcmp(trx->status, STATUS_DIPINJAM) != 0) {
+
+        printf("\nTransaksi tidak ditemukan, bukan milikmu, atau sudah dikembalikan.\n");
+        return;
+    }
+
+    // Mencari buku berdasarkan ID
+    Book *book = find_book_by_id(books, trx->ocaid);
+
+    if (book == NULL) {
+        printf("Data buku tidak ditemukan.\n");
+        return;
+    }
+
+    // Memperbarui status transaksi
+    if (!update_transaction_status(
+            transactions,
+            (int)transactionID,
+            STATUS_KEMBALI)) {
+
+        printf("Gagal memperbarui status transaksi.\n");
+        return;
+    }
+
+    // Menambahkan stok buku
+    book->stock++;
+
+    // Menyimpan perubahan stok
+    if (!save_books(FILE_BOOKS, books)) {
+
+        // Mengembalikan stok ke kondisi sebelumnya
+        book->stock--;
+
+        // Memulihkan status transaksi
+        update_transaction_status(
+            transactions,
+            (int)transactionID,
+            STATUS_DIPINJAM
+        );
+
+        printf("Gagal menyimpan perubahan stok.\n");
+        return;
+    }
+
+    printf("\n========================================\n");
+    printf("       PENGEMBALIAN BERHASIL!\n");
+    printf("========================================\n");
+
+    printf("ID Transaksi : %d\n", trx->id_transaksi);
+    printf("Judul Buku   : %s\n", book->title);
+    printf("Status       : %s\n", STATUS_KEMBALI);
+    printf("Sisa Stok    : %d\n", book->stock);
+}
+
+// =====================================================
+// 5. MELIHAT RIWAYAT PEMINJAMAN PRIBADI
+// =====================================================
+
+void showHistory(
+    const TransactionList *transactions,
+    const char *username
+) {
+
+    printf("\n========================================\n");
+    printf("          RIWAYAT PEMINJAMAN\n");
+    printf("========================================\n");
+
+    int found = 0;
+
+    for (size_t i = 0; i < transactions->count; i++) {
+
+        const Transaction *trx = &transactions->items[i];
+
+        // Hanya menampilkan riwayat user yang login
+        if (strcmp(trx->username, username) == 0) {
+
+            printf("\nID Transaksi : %d\n", trx->id_transaksi);
+            printf("ID Buku      : %s\n", trx->ocaid);
+            printf("Tanggal Pinjam: %s\n", trx->tanggal_pinjam);
+            printf("Status       : %s\n", trx->status);
+
+            printf("----------------------------------------\n");
+
+            found = 1;
+        }
+    }
+
+    if (!found) {
+        printf("Belum ada riwayat peminjaman.\n");
+    }
+}
