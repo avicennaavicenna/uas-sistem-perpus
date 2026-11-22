@@ -3,10 +3,13 @@
 
 #include "data_structure.h"
 
-/* Menampilkan form login dan memverifikasi akun pengguna */
-int prosesLogin(User *currentUser);
+/* Memeriksa username dan password */
+int prosesLogin(UserList *daftarUser, User *userLogin);
 
-/* Membersihkan status sesi login pengguna saat ini */
-void prosesLogout(User *currentUser);
+/* Menampilkan informasi pengguna */
+void tampilkanInfoUser(User user);
+
+/* Menutup/membersihkan sesi login pengguna saat ini */
+void prosesLogout(User *userLogin);
 
 #endif
