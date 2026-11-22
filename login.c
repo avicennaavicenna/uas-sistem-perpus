@@ -80,3 +80,18 @@ void tampilkanInfoUser(User user) {
     printf("Role     : %s\n", user.role);
     printf("====================================\n");
 }
+
+/* Menutup/membersihkan sesi login pengguna saat ini */
+void prosesLogout(User *userLogin) {
+    if (userLogin == NULL) {
+        return;
+    }
+
+    if (userLogin->username[0] != '\0') {
+        printf("\nAnda (%s) telah berhasil logout.\n", userLogin->username);
+    } else {
+        printf("\nSesi telah direset.\n");
+    }
+
+    memset(userLogin, 0, sizeof(User));
+}
