@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include "display.h"
@@ -97,23 +96,22 @@ void tampilkanMenuSorting(void) {
 void tampilkanMenuAlgoritma(void) {
     tampilkanHeader();
 
-    printf("\n       PILIH ALGORITMA SORTING\n");
-    printf("--------------------------------------------\n");
-    printf("1. Bubble Sort\n");
-    printf("2. Selection Sort\n");
-    printf("3. Insertion Sort\n");
-    printf("--------------------------------------------\n");
-    printf("Pilih algoritma: ");
+    printf("\n        METODE SORTING MANUAL\n");
+    printf("============================================\n");
+    printf("1. Bubble Sort    (Tukar elemen bersebelahan)\n");
+    printf("2. Selection Sort (Pilih nilai ekstrem)\n");
+    printf("3. Insertion Sort (Sisipkan ke posisi tepat)\n");
+    printf("============================================\n");
+    printf("Masukkan pilihan algoritma (1-3): ");
 }
 
-/* Menampilkan pilihan urutan */
 void tampilkanMenuUrutan(void) {
     tampilkanHeader();
 
-    printf("\n          PILIH URUTAN SORTING\n");
-    printf("--------------------------------------------\n");
-    printf("1. Ascending (Kecil ke Besar / A-Z)\n");
-    printf("2. Descending (Besar ke Kecil / Z-A)\n");
-    printf("--------------------------------------------\n");
-    printf("Pilih urutan: ");
+    printf("\n          ARAH PENGURUTAN DATA\n");
+    printf("============================================\n");
+    printf("1. Ascending  (Naik: A-Z / Terkecil ke Terbesar)\n");
+    printf("2. Descending (Turun: Z-A / Terbesar ke Terkecil)\n");
+    printf("============================================\n");
+    printf("Masukkan pilihan urutan (1-2): ");
 }
