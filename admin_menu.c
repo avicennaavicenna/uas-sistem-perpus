@@ -66,3 +66,58 @@ void showTransactionReport(void)
     printf("-------------------------------------------------------------------------------\n");
     printf("Total transaksi: %d\n", transactionCount);
 }
+void adminMenu(void)
+{
+    int choice;
+
+    do {
+        printf("\n");
+        printf("========================================\n");
+        printf("          MENU ADMIN PERPUSTAKAAN\n");
+        printf("========================================\n");
+        printf("1. Tampilkan katalog buku\n");
+        printf("2. Tambah buku\n");
+        printf("3. Ubah informasi buku\n");
+        printf("4. Hapus buku\n");
+        printf("5. Lihat laporan seluruh transaksi\n");
+        printf("0. Logout\n");
+        printf("========================================\n");
+
+        choice = readMenuChoice();
+
+        switch (choice) {
+            case 1:
+                showCatalog();
+                pauseScreen();
+                break;
+
+            case 2:
+                addBook();
+                pauseScreen();
+                break;
+
+            case 3:
+                editBook();
+                pauseScreen();
+                break;
+
+            case 4:
+                deleteBook();
+                pauseScreen();
+                break;
+
+            case 5:
+                showTransactionReport();
+                pauseScreen();
+                break;
+              case 0:
+                printf("Logout admin berhasil.\n");
+                break;
+
+            default:
+                printf("Pilihan tidak valid. Silakan coba lagi.\n");
+                pauseScreen();
+                break;
+        }
+    } while (choice != 0);
+}
