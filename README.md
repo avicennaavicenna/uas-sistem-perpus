@@ -8,9 +8,9 @@ Aplikasi **Sistem Manajemen Perpustakaan** berbasis antarmuka baris perintah (*C
 
 | No | Nama Lengkap | NPM |
 | :--- | :--- | :--- |
-| 1 | Daffa Alghaitsa | 2608107010000 |
-| 2 | Nama Anggota 2 | 2608107010000 |
-| 3 | Nama Anggota 3 | 2608107010000 |
+| 1 | Daffa Alghaitsa | 260810701100066 |
+| 2 | Nama Anggota 2 | 260810701100000 |
+| 3 | Nama Anggota 3 | 260810701100000|
 
 ---
 
