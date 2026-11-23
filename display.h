@@ -1,32 +1,31 @@
-
 #ifndef DISPLAY_H
 #define DISPLAY_H
 
-/* Menampilkan judul aplikasi */
-void tampilkanHeader(void);
-
-/* Membersihkan layar terminal */
+/* Membersihkan tampilan layar terminal sesuai sistem operasi */
 void clearScreen(void);
 
-/* Menunggu pengguna menekan Enter */
+/* Menjeda layar hingga pengguna menekan tombol Enter */
 void pauseScreen(void);
 
-/* Menampilkan menu awal */
+/* Menampilkan header judul aplikasi sistem manajemen perpustakaan */
+void tampilkanHeader(void);
+
+/* Menampilkan menu awal untuk login atau keluar dari aplikasi */
 void tampilkanMenuAwal(void);
 
-/* Menampilkan menu admin */
+/* Menampilkan daftar menu navigasi khusus peran admin */
 void tampilkanMenuAdmin(void);
 
-/* Menampilkan menu user */
+/* Menampilkan daftar menu navigasi khusus peran user */
 void tampilkanMenuUser(void);
 
-/* Menampilkan menu sorting buku */
+/* Menampilkan menu pemilihan atribut untuk pengurutan buku */
 void tampilkanMenuSorting(void);
 
-/* Menampilkan pilihan algoritma sorting */
+/* Menampilkan menu pemilihan algoritma sorting manual */
 void tampilkanMenuAlgoritma(void);
 
-/* Menampilkan pilihan urutan sorting */
+/* Menampilkan menu pemilihan arah urutan data */
 void tampilkanMenuUrutan(void);
 
 #endif
