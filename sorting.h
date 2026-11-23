@@ -1,4 +1,3 @@
-
 #ifndef SORTING_H
 #define SORTING_H
 
@@ -27,11 +26,7 @@ typedef enum {
 } SortingOrder;
 
 /* Fungsi utama sorting buku */
-void sortingBuku(
-    BookList *daftarBuku,
-    SortingAlgorithm algoritma,
-    SortingField atribut,
-    SortingOrder urutan
+void sortingBuku(BookList *daftarBuku, SortingAlgorithm algoritma, SortingField atribut, SortingOrder urutan);
 );
 
 #endif
