@@ -10,8 +10,8 @@ Aplikasi **Sistem Manajemen Perpustakaan** berbasis antarmuka baris perintah (*C
 | :--- | :--- | :--- |
 | 1 | Daffa Alghaitsa | 260810701100066 |
 | 2 | Avicenna | 260810701100026 |
-| 3 | Nama Anggota 3 | 260810701100000|
-| 4 | Nama Anggota 4 | 260810701100000|
+| 3 | Ulya Ananda | 260810701100059|
+| 4 | kaiyisa Maritsa | 260810701100062|
 
 ---
 
