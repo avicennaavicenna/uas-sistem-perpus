@@ -54,9 +54,7 @@ static int bandingkanBuku(Book a, Book b, SortingField atribut) {
 }
 
 /* Menentukan apakah buku A harus berada sebelum buku B */
-static int harusDiDepan(Book a, Book b,
-                        SortingField atribut,
-                        SortingOrder urutan) {
+static int harusDiDepan(Book a, Book b, SortingField atribut, SortingOrder urutan) {
     int hasil = bandingkanBuku(a, b, atribut);
 
     if (urutan == ASCENDING) {
@@ -66,15 +64,10 @@ static int harusDiDepan(Book a, Book b,
     return hasil < 0;
 }
 
-/* 1. BUBBLE SORT */
-static void bubbleSort(BookList *list,
-                       SortingField atribut,
-                       SortingOrder urutan) {
+static void bubbleSort(BookList *list, SortingField atribut, SortingOrder urutan) {
     for (size_t i = 0; i + 1 < list->count; i++) {
         for (size_t j = 0; j + 1 < list->count - i; j++) {
-            if (harusDiDepan(list->items[j],
-                             list->items[j + 1],
-                             atribut, urutan)) {
+            if (harusDiDepan(list->items[j], list->items[j + 1], atribut, urutan)) {
                 Book temp = list->items[j];
                 list->items[j] = list->items[j + 1];
                 list->items[j + 1] = temp;
@@ -83,17 +76,12 @@ static void bubbleSort(BookList *list,
     }
 }
 
-/* 2. SELECTION SORT */
-static void selectionSort(BookList *list,
-                          SortingField atribut,
-                          SortingOrder urutan) {
+static void selectionSort(BookList *list, SortingField atribut, SortingOrder urutan) {
     for (size_t i = 0; i + 1 < list->count; i++) {
         size_t posisi = i;
 
         for (size_t j = i + 1; j < list->count; j++) {
-            if (harusDiDepan(list->items[posisi],
-                             list->items[j],
-                             atribut, urutan)) {
+            if (harusDiDepan(list->items[posisi], list->items[j], atribut, urutan)) {
                 posisi = j;
             }
         }
@@ -106,17 +94,12 @@ static void selectionSort(BookList *list,
     }
 }
 
-/* 3. INSERTION SORT */
-static void insertionSort(BookList *list,
-                          SortingField atribut,
-                          SortingOrder urutan) {
+static void insertionSort(BookList *list, SortingField atribut, SortingOrder urutan) {
     for (size_t i = 1; i < list->count; i++) {
         Book kunci = list->items[i];
         size_t j = i;
 
-        while (j > 0 &&
-               harusDiDepan(list->items[j - 1],
-                            kunci, atribut, urutan)) {
+        while (j > 0 && harusDiDepan(list->items[j - 1], kunci, atribut, urutan)) {
             list->items[j] = list->items[j - 1];
             j--;
         }
@@ -124,7 +107,6 @@ static void insertionSort(BookList *list,
         list->items[j] = kunci;
     }
 }
-
 /* FUNGSI UTAMA SORTING */
 void sortingBuku(BookList *daftarBuku,
                  SortingAlgorithm algoritma,
