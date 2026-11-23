@@ -1,4 +1,3 @@
 username password role
-admin admin123 admin
-mahasiswa mhs123 user
-creeperHS78 duar admin
+admin admin_loh_ya admin
+member penghitaman user
