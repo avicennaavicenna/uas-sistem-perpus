@@ -51,7 +51,9 @@ static void pauseScreen(void)
     char input[8];
 
     printf("\nTekan Enter untuk melanjutkan...");
-    fgets(input, sizeof(input), stdin);
+    if (fgets(input, sizeof(input), stdin) == NULL) {
+    /* abaikan jika EOF atau gagal baca */
+}
 }
 
 static const char *findBookTitle(const BookList *books, const char *ocaid)
