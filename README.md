@@ -90,7 +90,7 @@ Buka terminal pada direktori proyek, lalu gunakan perintah berikut *(ganti `make
 ### Akun Admin Bawaan (*Default Admin*)
 Apabila `user.txt` belum memiliki akun dengan peran `admin`, sistem otomatis membuat akun administrator bawaan saat pertama kali dijalankan:
 * **Username:** `admin`
-* **Password:** `admin123`
+* **Password:** `admin_loh_ya`
 
 ---
 
