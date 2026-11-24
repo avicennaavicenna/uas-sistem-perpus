@@ -74,7 +74,9 @@ static void pauseScreen(void)
     char input[8];
 
     printf("\nTekan Enter untuk melanjutkan...");
-    fgets(input, sizeof(input), stdin);
+    if (fgets(input, sizeof(input), stdin) == NULL) {
+    /* abaikan jika EOF atau gagal baca */
+}
 }
 
 static int isUsernameTaken(const UserList *users, const char *username)
