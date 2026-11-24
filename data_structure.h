@@ -56,7 +56,7 @@ typedef struct {
     int id_transaksi;        /* ID unik transaksi (auto-increment) */
     char username[64];       /* Username peminjam */
     char ocaid[128];         /* ID buku yang dipinjam */
-    char tanggal_pinjam[24]; /* Format: YYYY-MM-DD */
+    char tanggal_pinjam[24]; /* Format: DD-MM-YYYY */
     char status[16];         /* "DIPINJAM" atau "KEMBALI" */
 } Transaction;
 
