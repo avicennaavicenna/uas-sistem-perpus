@@ -12,7 +12,6 @@ Aplikasi **Sistem Manajemen Perpustakaan** berbasis antarmuka baris perintah (*C
 | 2 | Avicenna | 260810701100026 |
 | 3 | Ulya Ananda | 260810701100059|
 | 4 | kaiyisa Maritsa | 260810701100062|
-
 ---
 
 ## 2. Arsitektur Aplikasi dan Struktur File
@@ -27,6 +26,7 @@ Aplikasi ini menggunakan **arsitektur modular** yang memisahkan lapisan struktur
 ### Struktur File
 ```text
 uas-sistem-perpus/
+├── Makefile            # Otomasi kompilasi, eksekusi, dan pembersihan file build
 ├── main.c              # Titik masuk utama program, autentikasi, & navigasi menu
 ├── data_structure.h    # Definisi struct (Book, User, Transaction) & list dinamis
 ├── database.h          # Deklarasi fungsi pengelolaan memori & operasi file .txt
@@ -49,23 +49,43 @@ uas-sistem-perpus/
 
 ### Prasyarat
 * Compiler bahasa C (**GCC** / MinGW pada Windows atau GCC/Clang pada Linux/macOS).
+* Utilitas **`make`** (atau **`mingw32-make`** pada Windows MinGW) jika menggunakan `Makefile`.
 * File dataset **`Books.txt`** berada di dalam folder yang sama dengan file hasil kompilasi.
 
-### Kompilasi (*Compile*)
-Buka terminal pada direktori proyek, lalu jalankan perintah berikut:
-```bash
-gcc -Wall -Wextra main.c database.c catalog.c admin_menu.c circulation.c -o perpustakaan
-```
+### Opsi A: Menggunakan Makefile (Direkomendasikan)
+Buka terminal pada direktori proyek, lalu gunakan perintah berikut *(ganti `make` menjadi `mingw32-make` jika menggunakan MinGW di PowerShell/CMD Windows)*:
 
-### Menjalankan Program (*Run*)
-* **Windows (PowerShell / CMD):**
-  ```powershell
-  .\perpustakaan.exe
-  ```
-* **Linux / macOS:**
+* **Kompilasi program (*Compile*):**
   ```bash
-  ./perpustakaan
+  make
   ```
+* **Kompilasi sekaligus menjalankan program (*Compile & Run*):**
+  ```bash
+  make run
+  ```
+* **Menghapus file hasil kompilasi (`.o` dan executable):**
+  ```bash
+  make clean
+  ```
+* **Mereset database operasional (`user.txt` dan `peminjaman.txt`) untuk pengujian:**
+  ```bash
+  make reset-db
+  ```
+
+### Opsi B: Kompilasi Manual via GCC (Tanpa Makefile)
+1. **Kompilasi (*Compile*):**
+   ```bash
+   gcc -Wall -Wextra -std=c11 -O2 main.c database.c catalog.c admin_menu.c circulation.c -o perpustakaan
+   ```
+2. **Menjalankan Program (*Run*):**
+   * **Windows (PowerShell / CMD):**
+     ```powershell
+     .\perpustakaan.exe
+     ```
+   * **Linux / macOS:**
+     ```bash
+     ./perpustakaan
+     ```
 
 ### Akun Admin Bawaan (*Default Admin*)
 Apabila `user.txt` belum memiliki akun dengan peran `admin`, sistem otomatis membuat akun administrator bawaan saat pertama kali dijalankan:
