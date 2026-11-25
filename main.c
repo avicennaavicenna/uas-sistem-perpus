@@ -9,6 +9,7 @@
 #include "database.h"
 #include "admin_menu.h"
 #include "circulation.h"
+#include "sorting.h"
 
 static void readLine(const char *prompt, char *buffer, size_t size)
 {
@@ -200,10 +201,20 @@ static void userMenu(BookList *books, TransactionList *transactions, const char 
         choice = readMenuChoice();
 
         switch (choice) {
-            case 1:
-                showAvailableBooks(books);
+                case 1: {
+                /* Diurutkan pada salinan, jadi urutan data asli tidak berubah */
+                BookList tampilan;
+
+                if (salinDaftarBuku(books, &tampilan)) {
+                    menuUrutkanBuku(&tampilan);
+                    showAvailableBooks(&tampilan);
+                    free(tampilan.items);
+                } else {
+                    showAvailableBooks(books);
+                }
                 pauseScreen();
                 break;
+            }
 
             case 2:
                 searchBook(books);
