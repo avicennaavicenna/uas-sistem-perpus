@@ -8,6 +8,7 @@
 #include "admin_menu.h"
 #include "catalog.h"
 #include "database.h"
+#include "sorting.h"
 
 static int readMenuChoice(void)
 {
@@ -119,10 +120,19 @@ void adminMenu(BookList *books, TransactionList *transactions)
         choice = readMenuChoice();
 
         switch (choice) {
-            case 1:
-                showCatalog(books);
+                case 1: {
+                BookList tampilan;
+
+                if (salinDaftarBuku(books, &tampilan)) {
+                    menuUrutkanBuku(&tampilan);
+                    showCatalog(&tampilan);
+                    free(tampilan.items);
+                } else {
+                    showCatalog(books);
+                }
                 pauseScreen();
                 break;
+            }
 
             case 2:
                 addBook(books);
