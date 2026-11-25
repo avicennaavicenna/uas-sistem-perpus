@@ -27,5 +27,9 @@ typedef enum {
 
 /* Mengurutkan daftar buku secara manual sesuai algoritma, atribut, dan arah urutan */
 void sortingBuku(BookList *daftarBuku, SortingAlgorithm algoritma, SortingField atribut, SortingOrder urutan);
+/* Menu interaktif: pilih atribut, algoritma, dan arah. Return 1 jika diurutkan. */
+int menuUrutkanBuku(BookList *daftarBuku);
 
+/* Membuat salinan daftar buku. Bebaskan dengan free(dst->items). */
+int salinDaftarBuku(const BookList *src, BookList *dst);
 #endif
